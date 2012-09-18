@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <script src='libs/raphael-min.js'></script>
+  <script src='libs/mootools-core-1.4.5-full-nocompat-yc.js'></script>
+  <script src="http://localhost:8080/application.js" type="text/javascript" charset="utf-8"></script>
+
+  <style> 
+    #canvas {
+      border: 1px solid gray;
+    }
+  </style>
+
+<script>
+
+window.onload = function() {
+  var paper = Raphael("canvas", 640, 480);
+
+  var circle = paper.circle(70, 70, 30);
+  circle.attr('fill', '#CCC');
+
+  /*
+  circle.click(function() {
+    circle.animate({"fill": "white", "r": 100, "stroke-width": 20}, 1000);
+});
+  */
+
+};
+</script>
+
+</head>
+
+<body>
+
+<div id='canvas' width=640 height=480></div>
+
+</body>
+</html>
