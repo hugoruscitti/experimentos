@@ -1,12 +1,56 @@
 {% extends "bootstrap_responsive.html" %}
 
+{% block head %}
+{{super()}}
+<script src='/static/libs/jquery-1.8.1.min.js'></script>
+
+<script>
+$(document).ready(function() {
+  var source = new EventSource('/stream');
+  var salida = document.getElementById('salida');
+
+  source.onmessage = function(e) {
+    salida.innerHTML = e.data + '\\n' + salida.innerHTML;
+  };
+
+  $("#enviar").click(function() {
+    var texto = $("#m").val();
+
+    $.ajax({
+            type: "POST",
+            url: "enviar",
+            data: {"data": texto},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (msg) {
+              alert(msg);
+            },
+            error: function (errormessage) {
+              console.log(errormessage);
+            }
+        });
+
+
+    $("#m").val("");
+
+    return false;
+  });
+});
+</script>
+
+{% endblock %}
+
 {% block body_content %}
 <div class="container">
   <p>Abre varias ventanas mostrando esta página y escribe algún mensaje.
 
-  <form method='post' action='emitir'>
+  <pre id='salida'>
+  </pre>
+
+  <form action='' method='post'>
     <label>Mensaje:</label>
-    <input name='m'></input>
+    <input name='m' id='m'></input>
+    <button type='submit' class='btn' id='enviar'>Enviar</button>
   </form>
 </div>
 {% endblock %}
