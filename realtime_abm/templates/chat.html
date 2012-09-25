@@ -1,0 +1,12 @@
+{% extends "bootstrap_responsive.html" %}
+
+{% block body_content %}
+<div class="container">
+  <p>Abre varias ventanas mostrando esta página y escribe algún mensaje.
+
+  <form method='post' action='emitir'>
+    <label>Mensaje:</label>
+    <input name='m'></input>
+  </form>
+</div>
+{% endblock %}
