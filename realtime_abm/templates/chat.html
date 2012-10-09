@@ -10,26 +10,28 @@ $(document).ready(function() {
   var salida = document.getElementById('salida');
 
   source.onmessage = function(e) {
-    salida.innerHTML = e.data + '\\n' + salida.innerHTML;
+    salida.innerHTML = e.data + '</br>' + salida.innerHTML;
   };
+
+  jQuery.extend({
+    postJSON: function(url, data, callback) {
+      return jQuery.ajax({
+        type: "POST",
+        url: url,
+        data: JSON.stringify(data),
+        success: callback,
+        dataType: "json",
+        contentType: "application/json",
+        processData: false
+      });
+    }
+  });
+
 
   $("#enviar").click(function() {
     var texto = $("#m").val();
 
-    $.ajax({
-            type: "POST",
-            url: "enviar",
-            data: {"data": texto},
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (msg) {
-              alert(msg);
-            },
-            error: function (errormessage) {
-              console.log(errormessage);
-            }
-        });
-
+    $.postJSON("enviar", {'mensaje': texto}, function (msg) {alert(msg);});
 
     $("#m").val("");
 
@@ -38,17 +40,23 @@ $(document).ready(function() {
 });
 </script>
 
+<style>
+  div#salida {
+    border: 1px solid gray;
+    margin: 1em;
+    padding: 10px;
+  }
+</style>
 {% endblock %}
 
 {% block body_content %}
 <div class="container">
   <p>Abre varias ventanas mostrando esta página y escribe algún mensaje.
 
-  <pre id='salida'>
-  </pre>
+  <div id='salida'> </div>
 
   <form action='' method='post'>
-    <label>Mensaje:</label>
+    <label>Mensaje: </label>
     <input name='m' id='m'></input>
     <button type='submit' class='btn' id='enviar'>Enviar</button>
   </form>
