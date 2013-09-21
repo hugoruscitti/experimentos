@@ -1,3 +1,53 @@
 div.pilas-contenedor {
-  
+  max-width: 800px;
+  margin: 1em;
+  height: 400px;
+  border: 1px solid red;
+  position: relative;
+}
+
+div.pilas-mensajes {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 400px;
+  z-index: 200;
+  cursor: hand;
+}
+
+ul.pilas-ejercicios {
+  text-align: right;
+}
+
+li.pilas-ejercicio {
+  display: inline-block;
+  margin-right: 2px;
+  background-color: gray;
+  border-radius: 2em;
+  width: 21px;
+  height: 21px;;
+  color: white;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 15px;
+}
+
+li.pilas-ejercicio a {
+  color: white;
+}
+
+li.completado {
+  background-color: rgb(75, 144, 219);
+}
+
+li.actual {
+  background-color: rgb(175, 144, 219);
+}
+
+div.centrado {
+  text-align: center;
+}
+
+div#console {
+  height: 140px;
 }

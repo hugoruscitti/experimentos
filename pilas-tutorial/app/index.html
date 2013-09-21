@@ -4,16 +4,42 @@
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
     <link href="css/pilas-tutorial.css" rel="stylesheet">
-    
     <link href="css/console.css" rel="stylesheet">
-    
   </head>
   
-  <body ng-controller='TutorialCtrl'>
+  <body>
     
-    <div class='pilas-contenedor'>
-    <ng-view></ng-view>
-    </div>
+    <div class='pilas-contenedor' ng-controller='TutorialCtrl'>
+        
+      <!-- Mensajes que avisan si el ejercicio se resolvio -->
+      <div ng-show='mensaje' ng-click='ocultar_mensajes()' class='pilas-mensajes'>
+        <div class='alert alert-success'>
+          <button type="button" class="close">&times;</button>
+          {{mensaje}}
+         </div>
+      </div>
+      
+      <!-- Linea que enumera los ejercicios -->
+      <ul class='pilas-ejercicios'>
+        <li class='pilas-ejercicio' 
+            ng-class="{completado: e.completado, actual: e.es_actual()}" 
+            ng-repeat='e in ejercicios'><a href='#/{{e.path}}'>{{e.numero}}</a></li>
+      </ul>
+      
+      <div class="row-fluid">
+        <div class="span6">
+          <ng-view></ng-view>
+        </div>
+          
+        <div class="span6">
+          <canvas width='100%' height='200'></canvas>
+          
+          <pilas-interprete evaluador='cuando_ejecuta()'></pilas-interprete>
+        </div>
+      </div>
+      
+    </div> <!-- fin class='pilas-contenedor' -->
+    
     
   </body>
   
