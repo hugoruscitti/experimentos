@@ -99,3 +99,33 @@ app.directive('pilasInterprete', function() {
         '</div>',
   }
 });
+  
+app.directive('pilasCanvas', function() {
+  return {
+    restrict: 'E',
+    replace: true,
+    transclude: true,
+    link: function (scope, elem, attrs) {
+      pilas = new Pilas();
+	  pilas.iniciar({ancho: 320, alto: 240, data_path: 'data'});
+      
+      pilas.onready = function() {
+  		var fondo = new pilas.fondos.Plano();
+
+  		window.aceituna = new pilas.actores.Aceituna();
+  		//window.aceituna.aprender(pilas.habilidades.SeguirAlMouse);
+  		//window.bomba = new pilas.actores.Bomba();
+  		//window.bomba.aprender(pilas.habilidades.MoverseConElTeclado);
+  		//window.bomba.x = 50;
+  		//window.actor = new pilas.actores.Actor();
+  		//window.aceituna.x = [100, 0, 100, 0];
+
+  		//pilas.definir_modos({puntos_de_control: true})
+	  }
+	  pilas.ejecutar();
+    },
+    template: '<div class="centrado">' + 
+    		  '<canvas id="canvas"></canvas>' +
+    		  '</div>'
+  }
+});
