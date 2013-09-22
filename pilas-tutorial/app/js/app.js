@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngRoute']);
+var app = angular.module('app', ['ngRoute', 'ngAnimate']);
 
 app.config(['$routeProvider', function($routeProvider) {
   $routeProvider.
@@ -13,10 +13,11 @@ app.config(['$routeProvider', function($routeProvider) {
 
 
 app.controller('TutorialCtrl', ['$scope', '$location', function($scope, $location) {
+  $scope.mostrar_mensaje = false;
   $scope.mensaje = "";
   
   $scope.ocultar_mensajes = function() {
-    $scope.mensaje = "";
+  	$scope.mostrar_mensaje = false;
   }
   
   function es_actual() {
@@ -53,6 +54,8 @@ app.controller('Paso1Ctrl', ['$scope', '$location', function($scope, $location) 
     if (dato == 4) {
       $location.path('/2');
       $scope.$parent.mensaje = "Ejercicio 1 completado!";
+      $scope.$parent.mostrar_mensaje = true;
+      $scope.$parent.ejercicios[0]['completado'] = true;
     } 
   }
   
@@ -76,6 +79,7 @@ app.directive('pilasInterprete', function() {
     transclude: true,
     link: function (scope, elem, attrs) {
     
+      var exec = document.getElementById('exec');
       /* Se conecta al evento de impresion de pantalla que emite la consola.
          Cuando llega esta senal intenta conectarla con el callback de la
          directiva.

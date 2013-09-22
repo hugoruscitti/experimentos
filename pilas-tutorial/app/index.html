@@ -12,7 +12,7 @@
     <div class='pilas-contenedor' ng-controller='TutorialCtrl'>
         
       <!-- Mensajes que avisan si el ejercicio se resolvio -->
-      <div ng-show='mensaje' ng-click='ocultar_mensajes()' class='pilas-mensajes'>
+      <div ng-show='mostrar_mensaje' ng-click='ocultar_mensajes()' class='animate-show pilas-mensajes'>
         <div class='alert alert-success'>
           <button type="button" class="close">&times;</button>
           {{mensaje}}
@@ -21,15 +21,16 @@
       
       <!-- Linea que enumera los ejercicios -->
       <ul class='pilas-ejercicios'>
-        <li class='pilas-ejercicio' 
-            ng-repeat='e in ejercicios'><a 
-                   ng-class="{completado: e.completado, actual: e.es_actual()}" 
-            href='#/{{e.path}}'>{{e.numero}}</a></li>
+        Pasos del tutorial 
+        <li class='pilas-ejercicio' ng-repeat='e in ejercicios'>
+            <a href='#/{{e.path}}' ng-show='e.completado' class='animate-show completado'>{{e.numero}}</a> 
+            <a href='#/{{e.path}}' ng-show='!e.completado' class='animate-show' ng-class="{actual: e.es_actual()}">{{e.numero}}</a> 
+        </li>
       </ul>
       
       <div class="row-fluid">
         <div class="span6">
-          <ng-view></ng-view>
+          <ng-view class="view-example"></ng-view>
         </div>
           
         <div class="span6">
