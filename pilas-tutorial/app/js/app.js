@@ -53,8 +53,8 @@ app.controller('Paso1Ctrl', ['$scope', '$location', function($scope, $location) 
   $scope.$parent.cuando_ejecuta = function(dato) {
     if (dato == 4) {
       $location.path('/2');
-      $scope.$parent.mensaje = "Ejercicio 1 completado!";
-      $scope.$parent.mostrar_mensaje = true;
+      //$scope.$parent.mensaje = "Ejercicio 1 completado!";
+      //$scope.$parent.mostrar_mensaje = true;
       $scope.$parent.ejercicios[0]['completado'] = true;
     } 
   }
@@ -62,15 +62,66 @@ app.controller('Paso1Ctrl', ['$scope', '$location', function($scope, $location) 
 }]);
 
 app.controller('Paso2Ctrl', ['$scope', '$location', function($scope, $location) {
+  var numero=0;
+  
+  $scope.consignas = [
+    {completa: false, texto: "Escribe nave.disparar() para disparar."},
+  ];
+    
+  function sumar_consigna(texto) {
+    
+    for (var i=0; i<$scope.consignas.length; i++)
+      $scope.consignas[i].completa = true;
+    	
+    $scope.consignas.push({completa: false, texto: texto});
+  }
+  
   $scope.$parent.cuando_ejecuta = function(data) {
-   
-    if (window['nombre']) {
-      $scope.$parent.nombre = window.nombre;
+      console.log(data);
+    
+    if (numero==0 && data == "Disparando ...") {
+    	sumar_consigna("Ahora nave.rotacion = [45]");
+        numero=1;
+    }
+                             
+    if (numero==1 && data == "45") {
+    	sumar_consigna("Por último nave.escala = 0.5 y nave.escala = [2,1]");
+        numero=2;
+    }
+                             
+    if (numero==2 && data == "2,1") {
+      $location.path('/3');
+      $scope.$parent.ejercicios[1]['completado'] = true;
     }
   }
   
 }]);
+  
+app.controller('Paso3Ctrl', ['$scope', '$location', function($scope, $location) {
+  
+  $scope.$parent.cuando_ejecuta = function(dato) {
+    if (dato == '????') {
+      $location.path('/4');
+      $scope.$parent.ejercicios[2]['completado'] = true;
+    } 
+  }
+  
+}]);
+   
 
+app.controller('Paso4Ctrl', ['$scope', '$location', function($scope, $location) {
+  
+  $scope.$parent.cuando_ejecuta = function(dato) {
+    if (dato == '????') {
+      $location.path('/5');
+      $scope.$parent.ejercicios[3]['completado'] = true;
+    } 
+  }
+  
+}]);
+  
+app.controller('Paso5Ctrl', ['$scope', '$location', function($scope, $location) {
+}]);
 
 app.directive('pilasInterprete', function() {
   return {
@@ -116,7 +167,8 @@ app.directive('pilasCanvas', function() {
       pilas.onready = function() {
   		var fondo = new pilas.fondos.Plano();
 
-  		window.aceituna = new pilas.actores.Aceituna();
+  		window.nave = new pilas.actores.Nave();
+        
   		//window.aceituna.aprender(pilas.habilidades.SeguirAlMouse);
   		//window.bomba = new pilas.actores.Bomba();
   		//window.bomba.aprender(pilas.habilidades.MoverseConElTeclado);

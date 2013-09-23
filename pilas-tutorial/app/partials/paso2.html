@@ -9,9 +9,8 @@ en decirle a la computadora "que" tiene que hacer.</p>
 <p><strong>¿Viste la nave que aparece arriba?</strong>, hacé lo siguiente para que
 comencemos a hacer un juego:</p>
 
-<ol>
-  <li>
-    <div class='alert'>Escribí <code>nave.disparar()</code>.</div>
-  </li>
-</ol>
+<div ng-repeat='c in consignas'>
+  <div ng-show='!c.completa' class='alert'><span class='icon-hand-right'></span> {{c.texto}}</div>
+  <div ng-show='c.completa' class='alert alert-success'><span class='icon-ok-circle'></span> {{c.texto}}</div>
+</div>
 

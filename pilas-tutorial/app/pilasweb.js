@@ -1,6 +1,7 @@
 /// <reference path="actores/aceituna.ts />
 /// <reference path="actores/bomba.ts />
 /// <reference path="actores/explosion.ts />
+/// <reference path="actores/nave.ts />
 /**
 * @class Actores
 *
@@ -14,7 +15,9 @@ var Actores = (function () {
         this.Aceituna = Aceituna;
         this.Actor = Actor;
         this.Bomba = Bomba;
+        this.Nave = Nave;
         this.Explosion = Explosion;
+        this.Proyectil = Proyectil;
     }
     return Actores;
 })();
@@ -321,6 +324,83 @@ var Explosion = (function (_super) {
     };
     return Explosion;
 })(Actor);
+/// <reference path="actor.ts"/>
+var Nave = (function (_super) {
+    __extends(Nave, _super);
+    function Nave(x, y) {
+        var imagen = pilas.imagenes.cargar_grilla("nave.png", 2);
+        _super.call(this, imagen, x, y);
+        this.centro_x = 23;
+        this.centro_y = 23;
+        this.paso = 0;
+        this.aprender(pilas.habilidades.PuedeExplotar);
+        this.aprender(pilas.habilidades.MoverseConElTecladoConRotacion);
+    }
+    Nave.prototype.actualizar = function () {
+        this.paso += 0.1;
+        this._imagen.definir_cuadro(parseInt(this.paso) % 2);
+        var control = pilas.escena_actual().control;
+    };
+
+    Nave.prototype.disparar = function () {
+        // TODO: convertir en una habilidad.
+        var disparo = new pilas.actores.Proyectil();
+        disparo.rotacion = this.rotacion - 90;
+        disparo.x = this.x;
+        disparo.y = this.y;
+        return "Disparando ...";
+    };
+
+    Nave.prototype.avanzar = function (velocidad) {
+        var rotacion_en_radianes;
+        var dx;
+        var dy;
+
+        var rotacion_en_radianes = pilas.utils.convertir_a_radianes(-this.rotacion + 90);
+
+        dx = Math.cos(rotacion_en_radianes) * velocidad;
+        dy = Math.sin(rotacion_en_radianes) * velocidad;
+
+        this.x += dx;
+        this.y += dy;
+    };
+    return Nave;
+})(Actor);
+/// <reference path="actor.ts"/>
+var Proyectil = (function (_super) {
+    __extends(Proyectil, _super);
+    function Proyectil(x, y) {
+        var imagen = pilas.imagenes.cargar_grilla("disparos/misil.png", 3);
+        _super.call(this, imagen, x, y);
+        this.centro_x = 20;
+        this.centro_y = 8;
+        this.paso = 0;
+        //this.aprender(pilas.habilidades.PuedeExplotar);
+    }
+    Proyectil.prototype.actualizar = function () {
+        this.paso += 0.1;
+        this._imagen.definir_cuadro(parseInt(this.paso) % 2);
+
+        // TODO: Convertir en una habilidad.
+        this.avanzar_respecto_del_angulo();
+    };
+
+    Proyectil.prototype.avanzar_respecto_del_angulo = function () {
+        var velocidad = 2;
+        var rotacion_en_radianes;
+        var dx;
+        var dy;
+
+        var rotacion_en_radianes = pilas.utils.convertir_a_radianes(-this.rotacion + 90 - 90);
+
+        dx = Math.cos(rotacion_en_radianes) * velocidad;
+        dy = Math.sin(rotacion_en_radianes) * velocidad;
+
+        this.x += dx;
+        this.y += dy;
+    };
+    return Proyectil;
+})(Actor);
 /**
 * @class Camara
 *
@@ -516,7 +596,7 @@ var ModoPuntosDeControl = (function () {
         }
 
         var pos = escena.obtener_posicion_escenario(escena.stage.mouseX, escena.stage.mouseY);
-        this.text_coordenada.text = "Posición del mouse: x=" + pos.x + " y=" + pos.y;
+        this.text_coordenada.text = "Posición del mouse: x=" + Math.floor(pos.x) + " y=" + Math.floor(pos.y);
     };
     return ModoPuntosDeControl;
 })();
@@ -761,21 +841,45 @@ var MoverseConElTeclado = (function (_super) {
     }
     MoverseConElTeclado.prototype.recibir = function (evento, tipo) {
         if (tipo == pilas.escena_actual().actualiza) {
-            if (pilas.escena_actual().control.izquierda) {
+            var control = pilas.escena_actual().control;
+
+            if (control.izquierda)
                 this.receptor.x -= 5;
-            }
-            if (pilas.escena_actual().control.derecha) {
+
+            if (control.derecha)
                 this.receptor.x += 5;
-            }
-            if (pilas.escena_actual().control.arriba) {
+
+            if (control.arriba)
                 this.receptor.y += 5;
-            }
-            if (pilas.escena_actual().control.abajo) {
+
+            if (control.abajo)
                 this.receptor.y -= 5;
-            }
         }
     };
     return MoverseConElTeclado;
+})(Habilidad);
+
+var MoverseConElTecladoConRotacion = (function (_super) {
+    __extends(MoverseConElTecladoConRotacion, _super);
+    function MoverseConElTecladoConRotacion(receptor) {
+        _super.call(this, receptor);
+        pilas.escena_actual().actualiza.conectar(this);
+    }
+    MoverseConElTecladoConRotacion.prototype.recibir = function (evento, tipo) {
+        if (tipo == pilas.escena_actual().actualiza) {
+            var control = pilas.escena_actual().control;
+
+            if (control.izquierda)
+                this.receptor.rotacion -= 2;
+
+            if (control.derecha)
+                this.receptor.rotacion += 2;
+
+            if (control.arriba)
+                this.receptor.avanzar(1.5);
+        }
+    };
+    return MoverseConElTecladoConRotacion;
 })(Habilidad);
 
 /**
@@ -847,6 +951,7 @@ var Habilidades = (function () {
         this.SeguirAlMouse = SeguirAlMouse;
         this.SeguirClicks = SeguirClicks;
         this.MoverseConElTeclado = MoverseConElTeclado;
+        this.MoverseConElTecladoConRotacion = MoverseConElTecladoConRotacion;
     }
     return Habilidades;
 })();
@@ -884,6 +989,9 @@ var Imagenes = (function () {
         this.cargar_recurso('sin_imagen.png');
 
         this.cargar_recurso('plano.png');
+        this.cargar_recurso('nave.png');
+
+        this.cargar_recurso('disparos/misil.png');
 
         this.cargar_recurso('cooperativista/alerta.png');
         this.cargar_recurso('cooperativista/camina.png');
@@ -1079,6 +1187,7 @@ var Pilas = (function () {
         this.fondos = new Fondos();
         this.mundo = new Mundo();
         this.interpolaciones = new Interpolaciones();
+        this.utils = new Utils();
 
         this.mundo.gestor_escenas.cambiar_escena(new Normal());
     };
@@ -1253,3 +1362,15 @@ var simbolos = {
     ABAJO: 40,
     ESPACIO: 32
 };
+var Utils = (function () {
+    function Utils() {
+    }
+    Utils.prototype.convertir_a_grados = function (angulo_en_radianes) {
+        return angulo_en_radianes * (180 / Math.PI);
+    };
+
+    Utils.prototype.convertir_a_radianes = function (angulo_en_grados) {
+        return angulo_en_grados * (Math.PI / 180);
+    };
+    return Utils;
+})();
